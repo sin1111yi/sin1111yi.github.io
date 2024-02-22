@@ -12,6 +12,7 @@ theme = "nightfall"
 [params]
 user = "sin1111yi"
 hostname = "github.io"
+footerHtml = 'CC-0, Built with <a href="https://gohugo.io" class="footerLink">Hugo</a> and <a href="https://github.com/LordMathis/hugo-theme-nightfall" class="footerLink">Nightfall</a> theme, <a href="https://github.com/sin1111yi/sin1111yi.github.io" class="footerLink">Repo here.</a>'
   [params.author]
     name = "Trying to be better!"  # Website and RSS feed author
     email = "sin1111yi@foxmail.com"  # RSS feed email address
