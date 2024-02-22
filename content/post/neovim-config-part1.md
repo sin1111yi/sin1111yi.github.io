@@ -7,15 +7,11 @@ tags = [
     "neovim",
 ]
 series = ["Neovim Config"]
-
 +++
 
-从零开始配置我的neovim。第一部分，配置options，keymaps。
+从零开始配置我的neovim。第一部分：配置文件结构说明，关于options和keymaps。
 <!--more-->
 
-## 目录
-
-- [目录](#目录)
 - [我的Neovim配置](#我的neovim配置)
 - [新建文件夹](#新建文件夹)
 - [结构说明](#结构说明)
@@ -120,7 +116,7 @@ Neovim的配置文件可以使用Vimscript或者lua编写，我这里使用lua�
 
 init.lua 是 neovim 在加载配置时最先加载的脚本，理论上我们可以把所有的配置都放在这里，但是这样就没有美感，不是一个程序员该做的事情。
 
-我的 init.lua 只有一行，调用了 core.bootstrap 模块中的 setup 方法。这个模块涉及到了插件加载等步骤，先按下不表。
+我的 init.lua 只有一行，调用了 `core.bootstrap` 模块中的 `setup` 方法。这个模块涉及到了插件加载等步骤，先按下不表。
 
 ```lua
 require("core.bootstrap").setup()
@@ -240,7 +236,7 @@ vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
     nested = true
 })
 ```
-这里先来看一下 **vim.api.nvim_create_autocmd** 的用法，neovim的api查询与用法可以在官方文档的api一章中找到，这里是[链接](https://neovim.io/doc/user/api.html#api)。
+这里先来看一下 `vim.api.nvim_create_autocmd` 的用法，neovim的api查询与用法可以在官方文档的api一章中找到，这里是[链接](https://neovim.io/doc/user/api.html#api)。
 
 首先给出请查看该api的官方说明，这里是[链接](https://neovim.io/doc/user/api.html#nvim_create_autocmd())。简单的说，就是需要给这个api传入两个lua table，第一个table是触发该autocmd的event，所有的autocmd-events可以在[这里](https://neovim.io/doc/user/autocmd.html#autocmd-events)找到；第二个table是该autocmd需要执行的动作以及一些配置，上文中提到的自动保存buffer的autocmd即是执行了 **silent! wall** 来实现保存，触发该动作的event为 **InsertLeave** 和 **TextChanged**。
 
@@ -360,7 +356,7 @@ local M = {}
 return M
 ```
 
-这样一来，当我们在这个文件外对这个module进行require时，其中的代码就会执行。
+这样一来，当我们在这个文件外对这个module进行 `require` 时，其中的代码就会执行。
 
 ```lua
 -- code part1
@@ -370,7 +366,7 @@ require("keymaps") -- "keymaps" is the name of module
 
 当执行code part1时，keymaps还没有被引入，因此keymaps中所定义的映射在此时均是无效的，当执行code part2时，keymaps已经完成了引入，此时keymaps中的映射就都可以使用了。
 
-此时进行一个举一反三，如果keymaps中定义的不是按键映射，而是其他配置，比如之前提到的ooptions或者autocmds，那么效果也是和刚才描述的一样。实际上我们的配置都是一段一段的lua代码，有些是赋值，如options，有些是调用neovim的api，因此在我们导入它们之前，即执行这些语句前，都是不会生效的。这就要求我们对自己配置加载顺序做出一定的考虑。
+此时进行一个举一反三，如果keymaps中定义的不是按键映射，而是其他配置，比如之前提到的options或者autocmds，那么效果也是和刚才描述的一样。实际上我们的配置都是一段一段的lua代码，有些是赋值，如options，有些是调用neovim的api，因此在我们导入它们之前，即执行这些语句前，都是不会生效的。这就要求我们对自己配置加载顺序做出一定的考虑。
 
 而在module中，可以定义module的方法，如
 ```lua
@@ -397,7 +393,7 @@ require("m1").setup(opts)
 ```
 来直接调用，并传入参数，对于参数类型的指定以及可变参数会在后面提到。
 
-回到keymaps.lua文件，我使用了刚才说到的引入模块的方法，引入了 **core.util** 模块并通过 **Util** 来调用它，然后使用了其中的两个方法，这两个方法现在可以先不关心，只需要知道都是对原有的keymap函数的二次封装即可
+回到keymaps.lua文件，我使用了刚才说到的引入模块的方法，引入了 `core.util` 模块并通过 **Util** 来调用它，然后使用了其中的两个方法，这两个方法现在可以先不关心，只需要知道都是对原有的keymap函数的二次封装即可
 ```lua
 local Util = require("core.util")
 
@@ -417,4 +413,4 @@ require("which-key").register({
     --- something
 })
 ```
-这里的 **which-key** 是neovim的一个插件，关于插件的内容在后面会讲到。
+这里的 `which-key` 是neovim的一个插件，关于插件的内容在后面会讲到。

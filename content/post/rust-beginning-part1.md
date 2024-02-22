@@ -1,13 +1,12 @@
 +++
 author = "sin1111yi"
 title = "Rust学习笔记.part1"
-date = "2024-02-20"
+date = "2024-02-22"
 description = "千里之行，始于足下。"
 tags = [
     "rust", "note"
 ]
 series = ["Rust Study"]
-
 +++
 
 变量与可变性：常量，隐藏，一些说明
@@ -116,5 +115,3 @@ error: could not compile `variables` due to previous error
 常量 constants
 
 隐藏 shadowing
-
-
