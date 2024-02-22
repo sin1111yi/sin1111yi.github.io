@@ -1,0 +1,31 @@
+baseURL = 'https://sin1111yi.github.io'
+languageCode = 'en-us'
+title = 's1s blog'
+theme = "nightfall"
+
+[menu]
+  [[menu.header]]
+    name = "blog"
+    weight = 0
+    url = "/post"
+
+[params]
+user = "sin1111yi"
+hostname = "github.io"
+  [params.author]
+    name = "Trying to be better!"  # Website and RSS feed author
+    email = "sin1111yi@foxmail.com"  # RSS feed email address
+
+
+readingTime = true  # Show reading time on post page
+published = true  # Show published data on post page
+
+[[params.social]]
+key = 0
+name = "github"
+url = "https://github.com/sin1111yi"
+
+[[params.social]]
+key = 1
+name = "sin1111yi@foxmail.com"
+url = "/"
