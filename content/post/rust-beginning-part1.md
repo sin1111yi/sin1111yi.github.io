@@ -13,7 +13,12 @@ series = ["Rust Study"]
 
 <!--more-->
 
-从零开始学习rust，参考书籍[Rust程序设计语言](https://kaisery.github.io/trpl-zh-cn/)
+从零开始学习rust，参考书籍[Rust程序设计语言](https://kaisery.github.io/trpl-zh-cn/)，原始仓库 [rust-lang/book](https://github.com/rust-lang/book)。
+
+- [变量与可变性](#变量与可变性)
+  - [常量](#常量)
+  - [隐藏](#隐藏)
+- [一些术语](#一些术语)
 
 ## 变量与可变性
 
@@ -110,8 +115,8 @@ error: could not compile `variables` due to previous error
 
 ## 一些术语
 
-不可变错误 immutability error
+不可变错误 - immutability error
 
-常量 constants
+常量 - constants
 
-隐藏 shadowing
+隐藏 - shadowing
