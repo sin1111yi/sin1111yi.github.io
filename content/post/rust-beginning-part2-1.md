@@ -1,7 +1,7 @@
 +++
 author = "sin1111yi"
 title = "Rust学习笔记.part2.1"
-date = "2024-02-22"
+date = "2024-02-27"
 description = "千里之行，始于足下。"
 tags = [
     "rust", "note"
