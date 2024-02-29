@@ -102,8 +102,6 @@ local pluginsConf = {
         ["ui"] = true,
         ["coding"] = true,
         ["coding.support"] = true,
-
-        ["extra"] = false,
         ["custom"] = false,
     },
 
@@ -112,6 +110,13 @@ local pluginsConf = {
         -- for example, uncomment this line to let lazy ignore neodev
         -- "folke/neodev.nvim",
     },
+
+    ---@type table<string, boolean>
+    extra_modules = {
+        ["markdown"] = true,
+        ["tree-sitter-extensions"] = true,
+    }
+}
 }
 
 local opts = {
@@ -177,7 +182,7 @@ return M
 
 随后，定义了 `create_usr_cmds` 方法用来创建用户命令，在后面的过程中，只需要调用一次，就可以创建其中定义的用户方法。
 
-最后，定义了 `setup` 方法，也就是在 part1 中被 init.lua 调用的方法。在这个方法中，首先加载了 `options` 模块，根据要求，这个模块必须在最初加载，随后调用了 Util 中的几个方法，这里可以先不管，只需要知道这是 Util 组件的初始化，搬运自LazyVim即可。最关键的一行是
+最后，定义了 `setup` 方法，也就是在 part1 中被 init.lua 调用的方法。在这个方法中，首先加载了 `options` 模块，根据要求，这个模块必须在最初加载，随后调用了 Util 中的几个方法，这里可以先不管，只需要知道这是 Util 组件的初始化，搬运自LazyVim即可，然后加载之前提到过的 `keyamps` 和 `autocmds`。最关键的一行是
 
 ```lua
 require("lazy").setup(require("plugins.necessary").setup(pluginsConf), opts)
@@ -211,21 +216,39 @@ M.setup = function(opts)
             return vim.loop.fs_stat(mod_path .. module) ~= nil
         end
 
-        for k, v in pairs(opts.load_modules) do
-            if not mod_exist(k) then
-                vim.notify("Module \"" .. k .. "\" is not existed!\n")
-            end
+        for mod, load in pairs(opts.load_modules) do
+            local exist = mod_exist(mod)
 
-            if v then
+            if load and exist then
                 table.insert(M.plugins_table,
-                    { import = "plugins." .. k })
+                    { import = "plugins." .. mod })
+            elseif not exist then
+                vim.notify("Module \"" .. mod .. "\" is not existed!")
+            end
+        end
+    end
+
+    if opts.extra_modules ~= nil and next(opts.extra_modules) ~= nil then
+        ---@param module string
+        ---@return boolean
+        local function extra_module_exist(module)
+            local mod_path = vim.fn.stdpath("config") .. "/lua/plugins/extra/"
+            return vim.loop.fs_stat(mod_path .. module .. ".lua") ~= nil
+        end
+
+        for exmod, load in pairs(opts.extra_modules) do
+            local exist = extra_module_exist(exmod)
+            if load and exist then
+                table.insert(M.plugins_table, require("plugins.extra." .. exmod))
+            elseif not exist then
+                vim.notify("Extra module \"" .. exmod .. "\" is not existed!")
             end
         end
     end
 
     if opts.disbaled_plugins ~= nil and next(opts.disbaled_plugins) ~= nil then
         for _, p in ipairs(opts.disbaled_plugins) do
-            table.insert(M.plugins_table, { p, cond = false })
+            table.insert(M.plugins_table, { p, enabled = false })
         end
     end
 
@@ -235,9 +258,14 @@ end
 return M
 ```
 
-在这个 setup 方法中，传入参数为一个表，也就是在 bootstrap.lua 定义的 pluginsConf，其由两个成员组成
+在这个 setup 方法中，传入参数为一个表，也就是在 bootstrap.lua 定义的 pluginsConf，其由三个成员组成
 
 1. load_modules，类型为字符串和布尔值的键值对
 2. disbaled_plugins，类型为字符串表
+3. extra_modules，类型为字符串和布尔值的键值对
 
-在该方法中，定义了内部方法 `mod_exist` 来判断 `vim.fn.stdpath("config") .. "/lua/plugins/"` 路径中是否有某一模块，如果有并且传入的布尔值为真，则通过 lazy 加载，否则不加载。如果 disbaled_plugins 中有某一模块名，则会通过 lazy 取消该模块的加载。
+在该方法中，定义了内部方法 `mod_exist` 来判断 `vim.fn.stdpath("config") .. "/lua/plugins/"` 路径中是否有某一模块，如果有并且传入的布尔值为真，则通过 lazy 加载，否则不加载。
+
+如果 disbaled_plugins 中有某一模块名，则会通过 lazy 取消该模块的加载。
+
+在内部定义了 `extra_module_exist` 来判断 `vim.fn.stdpath("config") .. "/lua/plugins/extra/"` 方法来判断路径中是否有某一文件，也就是额外模块，如果 extra_modules 中存在该模块，并且传入的布尔值为真，则通过 lazy 加载，否则不加载。
