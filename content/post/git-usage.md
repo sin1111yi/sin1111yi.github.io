@@ -10,6 +10,9 @@ tags = [
 series = ["git"]
 +++
 
+熟练使用Git是程序员的美德！
+<!--more-->
+
 ## Git 常用命令记录
 
 假设一个并不存在的github仓库 `https://github.com/sin1111yi/AnExampleExistRepo`
